@@ -6,7 +6,7 @@
 ## Sample Code
 ```java
 // we use cube and sphere as base geometries
-CSG cube = new Cube(2).toCSG();
+CSG cube   = new Cube(2).toCSG();
 CSG sphere = new Sphere(1.25).toCSG();
 
 // compute difference between cube and sphere
@@ -28,3 +28,28 @@ CSG all = MeshTools.optimize(
 // save optimized mesh as "all.stl"
 Files.write(Paths.get("all.stl"), all.toStlString().getBytes());
 ```
+
+## How to Build JCSG-MeshExtensions
+
+### Requirements
+
+- Java >= 1.8
+- Internet connection (dependencies are downloaded automatically)
+- IDE: [Gradle](http://www.gradle.org/) Plugin (not necessary for command line usage)
+
+### IDE
+
+Open the `JCSG-MeshExtensions` [Gradle](http://www.gradle.org/) project in your favourite IDE (tested with NetBeans 8.2) and build it
+by calling the `assemble` task.
+
+### Command Line
+
+Navigate to the [Gradle](http://www.gradle.org/) project (e.g., `path/to/JCSG-MeshExtensions`) and enter the following command
+
+#### Bash (Linux/OS X/Cygwin/other Unix-like shell)
+
+    sh gradlew assemble
+    
+#### Windows (CMD)
+
+    gradlew assemble
