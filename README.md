@@ -1,5 +1,5 @@
 # JCSG-MeshExtensions
-Additional functionality for producing high-quality meshes from JCSG objects. The mesh optimization is performed with the cross-platform meshing software [ProMesh](http://promesh3d.com/) which is available as ug4 plugin.
+Additional functionality for producing high-quality meshes from [JCSG](https://github.com/miho/JCSG) objects. The mesh optimization is performed with the cross-platform meshing software [ProMesh](http://promesh3d.com/) which is available as [ug4](https://github.com/UG4/ugcore) plugin.
 
 <img src="https://raw.githubusercontent.com/miho/JCSG-MeshExtensions/master/res/img/optimize.jpg" alt="optimization" width="450">
 
