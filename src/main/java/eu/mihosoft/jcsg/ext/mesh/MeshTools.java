@@ -48,7 +48,7 @@ import java.util.Scanner;
 public class MeshTools {
 
     /**
-     * Optimizes the specified csg mesh object.
+     * Optimizes and repairs the specified csg mesh object.
      * @param csg csg to optimize
      * @param tol default tolerance
      * @param maxTol maximum tolerance
@@ -69,7 +69,7 @@ public class MeshTools {
 
             Files.write(stlFile, csg.toStlString().getBytes());
 
-            String code = read("optimize.lua");
+            String code = read("optimize-and-repair.lua");
 
             code = code.replace("$filename$", "\""
                     + stlFile.toAbsolutePath().toString() + "\"");
