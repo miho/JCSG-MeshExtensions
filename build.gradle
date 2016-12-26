@@ -14,6 +14,7 @@ sourceCompatibility = '1.8'
 
 tasks.withType(Javadoc) {
     options.addStringOption('Xdoclint:none', '-quiet')
+    failOnError = false
 }
 
 task wrapper(type: Wrapper, description: 'Creates and deploys the Gradle wrapper to the current directory.') {
