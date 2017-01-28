@@ -21,10 +21,6 @@ task wrapper(type: Wrapper, description: 'Creates and deploys the Gradle wrapper
     gradleVersion = '3.1'
 }
 
-if (!hasProperty('mainClass')) {
-    ext.mainClass = 'eu.mihosoft.jcsg.ext.mesh.Main'
-}
-
 repositories {
     mavenCentral()
     jcenter()
