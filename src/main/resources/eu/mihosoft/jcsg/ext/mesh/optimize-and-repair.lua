@@ -41,6 +41,11 @@ minEdgeLength       = $minEdgeLength$
 maxEdgeLength       = $maxEdgeLength$
 maxAdjIter          = $maxAdjIter$
 
+-- might be useful if we use new adjustEdgeLengthExtended
+-- (currently, not stable enough, might be just a parameter problem)
+--edgeApprox          = $edgeApprox$
+--edgeTriangleQuality = $edgeTriangleQuality$
+
 -- check whether boundery edges exist
 function hasBoundaryEdges(meshP)
 
@@ -98,6 +103,7 @@ MarkSelection(mesh)
 
 print("> retriangulate")
 AdjustEdgeLength(mesh, minEdgeLength, maxEdgeLength, maxAdjIter, true, true)
+--AdjustEdgeLengthExtended(mesh, minEdgeLength, maxEdgeLength, edgeApprox, edgeTriangleQuality, maxAdjIter, true)
 
 ClearMarks(mesh)
 
