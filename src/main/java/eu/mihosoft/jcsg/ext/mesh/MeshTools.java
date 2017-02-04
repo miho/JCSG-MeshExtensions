@@ -33,8 +33,8 @@
 package eu.mihosoft.jcsg.ext.mesh;
 
 import eu.mihosoft.ugshell.vugshell.Shell;
-import eu.mihosoft.vrl.v3d.CSG;
-import eu.mihosoft.vrl.v3d.STL;
+import eu.mihosoft.jcsg.CSG;
+import eu.mihosoft.jcsg.STL;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -92,13 +92,21 @@ public class MeshTools {
             Path tmpDir = Files.createTempDirectory("jcsgmeshopt");
             Path stlFile = Paths.get(tmpDir.toAbsolutePath().toString(),
                     "csg.stl");
+            
+            System.out.println("f: " + stlFile);
 
             Files.write(stlFile, csg.toStlString().getBytes());
 
             String code = read("optimize-and-repair.lua");
 
+            String pathVariable = stlFile.toAbsolutePath().toString();//
+            
+            if(System.getProperty("os.name").toLowerCase().contains("windows")) {
+                pathVariable = pathVariable.replace("\\","\\\\");
+            }
+            
             code = code.replace("$filename$", "\""
-                    + stlFile.toAbsolutePath().toString() + "\"");
+                    + pathVariable + "\"");
             code = code.replace("$removeDoublesTOL$", "" + tol);
             code = code.replace("$creaseEdgeAngle$", "" + creaseEdgeAngle);
             code = code.replace("$resolveTOL$", "" + maxTol);
