@@ -37,7 +37,7 @@ dependencies {
     compile group: 'eu.mihosoft.ugshell.ugdist', name: 'ugshell-dist', version: '2016.1.5'
     
     // jcsg library
-    compile group: 'eu.mihosoft.vrl.jcsg', name: 'jcsg', version: '0.5.+'
-    compile group: 'eu.mihosoft.vrl.jcsg', name: 'jcsg', version: '0.5.+', classifier: 'sources'
-    compile group: 'eu.mihosoft.vrl.jcsg', name: 'jcsg', version: '0.5.+', classifier: 'javadoc'
+    compile group: 'eu.mihosoft.vrl.jcsg', name: 'jcsg', version: '0.5.2'
+    compile group: 'eu.mihosoft.vrl.jcsg', name: 'jcsg', version: '0.5.2', classifier: 'sources'
+    compile group: 'eu.mihosoft.vrl.jcsg', name: 'jcsg', version: '0.5.2', classifier: 'javadoc'
 }
