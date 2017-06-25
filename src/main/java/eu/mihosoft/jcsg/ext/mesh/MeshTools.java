@@ -179,7 +179,7 @@ public class MeshTools {
      * @param creaseEdgeAngle angle threashold for crease edge marker
      * @return optimized csg mesh object
      */
-    public CSG optimize(CSG csg,
+    public static CSG optimize(CSG csg,
             double size,
             double tol,
             double maxTol,
