@@ -35,12 +35,14 @@ package eu.mihosoft.jcsg.ext.mesh;
 import eu.mihosoft.ugshell.vugshell.Shell;
 import eu.mihosoft.jcsg.CSG;
 import eu.mihosoft.jcsg.STL;
+import eu.mihosoft.vvecmath.Transform;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
+import java.util.function.Function;
 
 /**
  * Mesh tools for optimizing and manipulating csg mesh objects.
@@ -92,19 +94,19 @@ public class MeshTools {
             Path tmpDir = Files.createTempDirectory("jcsgmeshopt");
             Path stlFile = Paths.get(tmpDir.toAbsolutePath().toString(),
                     "csg.stl");
-            
-            System.out.println("f: " + stlFile);
+
+            System.out.println("mesh-ext: csg file: " + stlFile);
 
             Files.write(stlFile, csg.toStlString().getBytes());
 
             String code = read("optimize-and-repair.lua");
 
             String pathVariable = stlFile.toAbsolutePath().toString();//
-            
-            if(System.getProperty("os.name").toLowerCase().contains("windows")) {
-                pathVariable = pathVariable.replace("\\","\\\\");
+
+            if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+                pathVariable = pathVariable.replace("\\", "\\\\");
             }
-            
+
             code = code.replace("$filename$", "\""
                     + pathVariable + "\"");
             code = code.replace("$removeDoublesTOL$", "" + tol);
@@ -113,10 +115,9 @@ public class MeshTools {
             code = code.replace("$minEdgeLength$", "" + minEdgeLength);
             code = code.replace("$maxEdgeLength$", "" + maxEdgeLength);
             code = code.replace("$maxAdjIter$", "" + maxIter);
-            
+
 //            code = code.replace("$edgeApprox$", "" + edgeApprox);
 //            code = code.replace("$edgeTriangleQuality$", "" + edgeTriangleQuality);
-
             Shell.execute(tmpDir.toFile(), code).print().waitFor();
 
             return STL.file(stlFile);
@@ -126,6 +127,103 @@ public class MeshTools {
             throw new RuntimeException(
                     "optimization failed due to io exception", e);
         }
+    }
+
+    /**
+     * Optimizes and repairs the specified csg mesh object.
+     * 
+     * <b>Note: </b>the size of the
+     * object during optimization can have a high impact on the overall
+     * optimization quality. Therefore, this method allows the specification of
+     * the size at which the optimization is performed. After the optimization
+     * the object is returned at original size.
+     *
+     * @param csg csg to optimize
+     * @param size object size at which to perform the optimization (minimum
+     * dimension)
+     * @param tol default tolerance
+     * @param maxTol maximum tolerance
+     * @param minEdgeLength minimum edge length
+     * @param maxEdgeLength maximum edge length
+     * @return optimized csg mesh object
+     */
+    public static CSG optimize(
+            CSG csg, double size, double tol,
+            double maxTol,
+            double minEdgeLength,
+            double maxEdgeLength) {
+        return scaleMinDimensionTo(csg, size,
+                (csgObj) -> optimize(
+                        csg, tol, maxTol,
+                        minEdgeLength, maxEdgeLength,
+                        10, 5.0));
+    }
+
+    /**
+     * Optimizes and repairs the specified csg mesh object. 
+     * 
+     * <b>Note: </b>the size of the
+     * object during optimization can have a high impact on the overall
+     * optimization quality. Therefore, this method allows the specification of
+     * the size at which the optimization is performed. After the optimization
+     * the object is returned at original size.
+     *
+     * @param csg csg to optimize
+     * @param size object size at which to perform the optimization (minimum
+     * dimension)
+     * @param tol default tolerance
+     * @param maxTol maximum tolerance
+     * @param minEdgeLength minimum edge length
+     * @param maxEdgeLength maximum edge length
+     * @param maxIter number of iterations for edge length adjustment
+     * @param creaseEdgeAngle angle threashold for crease edge marker
+     * @return optimized csg mesh object
+     */
+    public CSG optimize(CSG csg,
+            double size,
+            double tol,
+            double maxTol,
+            double minEdgeLength,
+            double maxEdgeLength,
+            int maxIter,
+            double creaseEdgeAngle) {
+        return scaleMinDimensionTo(csg, size,
+                (csgObj) -> optimize(csgObj, tol, maxTol,
+                        minEdgeLength, maxEdgeLength));
+    }
+
+    /**
+     * Scales the minimum CSG dimension to the specified value, invokes the
+     * specified function and rescales the specified CSG object to its original
+     * size.
+     *
+     * @param csg csg to process at specified scale
+     * @param scale scale
+     * @param processF processing function
+     * @return the processed CSG at original scale
+     */
+    private static CSG scaleMinDimensionTo(CSG csg,
+            double scale, Function<CSG, CSG> processF) {
+
+        double w = csg.getBounds().getBounds().getX();
+        double h = csg.getBounds().getBounds().getY();
+        double d = csg.getBounds().getBounds().getZ();
+
+        // find minimum dimension
+        double size = Math.min(w, Math.min(h, d));
+
+        // scale CSG object so its minimum dimension is 100 in size
+        CSG result = csg;
+        double scale1 = 1.0 / size * scale;
+        double scale2 = 1.0 / scale1;
+        result = result.transformed(Transform.unity().scale(scale1));
+
+        result = processF.apply(result);
+
+        // restore original scale
+        result = result.transformed(Transform.unity().scale(scale2));
+
+        return result;
     }
 
     private static String read(String resourceName) {
