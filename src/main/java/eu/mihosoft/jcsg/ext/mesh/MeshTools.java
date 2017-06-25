@@ -49,7 +49,11 @@ import java.util.function.Function;
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
-public class MeshTools {
+public final class MeshTools {
+
+    private MeshTools() {
+        throw new AssertionError("Don't instantiate me!");
+    }
 
     /**
      * Optimizes and repairs the specified csg mesh object.
