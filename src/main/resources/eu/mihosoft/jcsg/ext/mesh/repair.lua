@@ -35,18 +35,9 @@
 -- script parameters
 fileName            = $fileName$
 removeDoublesTOL    = $removeDoublesTOL$
-creaseEdgeAngle     = $creaseEdgeAngle$
 resolveTOL          = $resolveTOL$
-minEdgeLength       = $minEdgeLength$
-maxEdgeLength       = $maxEdgeLength$
-maxAdjIter          = $maxAdjIter$
 
--- selects optimization type
-optType            = $optType$
 
--- necessary if we use new adjustEdgeLengthExtended
-edgeApprox          = $edgeApprox$
-edgeTriangleQuality = $edgeTriangleQuality$
 
 -- check whether boundery edges exist
 function hasBoundaryEdges(meshP)
@@ -95,27 +86,4 @@ end
 if counter >= maxIter then
     print(" -> ERROR while fixing mesh")
     do return 1 end -- quit with exit code
-end
-
-print("> mark crease edges")
-
-SelectCreaseEdges(mesh,creaseEdgeAngle)
-
-MarkSelection(mesh)
-
-print("> retriangulate")
-if optType=="adjust-edge-length" then
-    AdjustEdgeLength(mesh, minEdgeLength, maxEdgeLength, maxAdjIter, true, true)
-elseif optType=="adjust-edge-length-extended" then
-    AdjustEdgeLengthExtended(mesh, minEdgeLength, maxEdgeLength, edgeApprox, edgeTriangleQuality, maxAdjIter, true)
-else
-    print(" -> ERROR: optimization type '"..optType.."' not supported.")
-    do return 1 end -- quit with exit code
-end
-
-ClearMarks(mesh)
-
-print("> saving "..fileName)
-if SaveMesh(mesh, fileName)==false then
-    print(" -> ERROR while saving file.")
 end
