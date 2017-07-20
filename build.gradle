@@ -18,7 +18,7 @@ tasks.withType(Javadoc) {
 }
 
 task wrapper(type: Wrapper, description: 'Creates and deploys the Gradle wrapper to the current directory.') {
-    gradleVersion = '3.3'
+    gradleVersion = '4.0'
 }
 
 repositories {
@@ -30,14 +30,14 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.10'
     
     // ug shell api
-    compile group: 'eu.mihosoft.ugshell.vugshell', name: 'vugshell', version: '2016.1.7'
-    compile group: 'eu.mihosoft.ugshell.vugshell', name: 'vugshell', version: '2016.1.7', classifier: 'sources'
+    compile group: 'eu.mihosoft.ugshell.vugshell', name: 'vugshell', version: '2017.1.0'
+    compile group: 'eu.mihosoft.ugshell.vugshell', name: 'vugshell', version: '2017.1.0', classifier: 'sources'
     
     // binary ug distribution
-    compile group: 'eu.mihosoft.ugshell.ugdist', name: 'ugshell-dist', version: '2016.1.5'
+    compile group: 'eu.mihosoft.ugshell.ugdist', name: 'ugshell-dist', version: '2017.1.0'
     
     // jcsg library
-    compile group: 'eu.mihosoft.vrl.jcsg', name: 'jcsg', version: '0.5.2'
-    compile group: 'eu.mihosoft.vrl.jcsg', name: 'jcsg', version: '0.5.2', classifier: 'sources'
-    compile group: 'eu.mihosoft.vrl.jcsg', name: 'jcsg', version: '0.5.2', classifier: 'javadoc'
+    compile group: 'eu.mihosoft.vrl.jcsg', name: 'jcsg', version: '0.5.6'
+    compile group: 'eu.mihosoft.vrl.jcsg', name: 'jcsg', version: '0.5.6', classifier: 'sources'
+    compile group: 'eu.mihosoft.vrl.jcsg', name: 'jcsg', version: '0.5.6', classifier: 'javadoc'
 }
