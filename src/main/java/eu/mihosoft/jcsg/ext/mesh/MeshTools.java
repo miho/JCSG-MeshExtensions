@@ -249,8 +249,73 @@ public final class MeshTools {
             code = code.replace("$edgeApprox$", "" + edgeApprox);
             code = code.replace("$edgeTriangleQuality$", "" + edgeTriangleQuality);
 
-//            code = code.replace("$edgeApprox$", "" + edgeApprox);
-//            code = code.replace("$edgeTriangleQuality$", "" + edgeTriangleQuality);
+            Shell.execute(tmpDir.toFile(), code).print().waitFor();
+
+            return STL.file(stlFile);
+
+        } catch (IOException e) {
+            e.printStackTrace(System.err);
+            throw new RuntimeException(
+                    "optimization failed due to io exception", e);
+        }
+    }
+
+    /**
+     * Repairs the specified csg mesh object.
+     *
+     * <b>Note: </b>the size of the
+     * object during repairs can have a high impact on the overall
+     * repair quality. Therefore, this method allows the specification of
+     * the size at which the repair algorithm is performed. After repairing
+     * the object is returned at original size.
+     *
+     * @param csg csg to repair
+     * @param size object size at which to perform the repair operation (minimum
+     * dimension)
+     * @param tol default tolerance
+     * @param maxTol maximum tolerance
+     * @return repaired csg mesh object
+     */
+    public static CSG repair(CSG csg, double size, double tol,
+                               double maxTol) {
+        return scaleMinDimensionTo(csg, size,
+                (csgObj) -> repair(csgObj, tol, maxTol));
+    }
+
+    /**
+     * Repairs the specified csg mesh object.
+     *
+     * @param csg csg to repair
+     * @param tol default tolerance
+     * @param maxTol maximum tolerance
+     * @return repaired csg mesh object
+     */
+    private static CSG repair(
+            CSG csg, double tol,
+            double maxTol) {
+        try {
+
+            Path tmpDir = Files.createTempDirectory("jcsgmeshopt");
+            Path stlFile = Paths.get(tmpDir.toAbsolutePath().toString(),
+                    "csg.stl");
+
+            System.out.println("mesh-ext: csg file: " + stlFile);
+
+            Files.write(stlFile, csg.toStlString().getBytes());
+
+            String code = read("repair.lua");
+
+            String pathVariable = stlFile.toAbsolutePath().toString();//
+
+            if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+                pathVariable = pathVariable.replace("\\", "\\\\");
+            }
+
+            code = code.replace("$fileName$", "\""
+                    + pathVariable + "\"");
+            code = code.replace("$removeDoublesTOL$", "" + tol);
+            code = code.replace("$resolveTOL$", "" + maxTol);
+
             Shell.execute(tmpDir.toFile(), code).print().waitFor();
 
             return STL.file(stlFile);
