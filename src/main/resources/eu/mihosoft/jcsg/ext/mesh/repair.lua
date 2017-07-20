@@ -87,3 +87,8 @@ if counter >= maxIter then
     print(" -> ERROR while fixing mesh")
     do return 1 end -- quit with exit code
 end
+
+print("> saving "..fileName)
+if SaveMesh(mesh, fileName)==false then
+    print(" -> ERROR while saving file.")
+end
